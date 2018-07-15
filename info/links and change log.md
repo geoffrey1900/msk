@@ -10,12 +10,15 @@ the link to the private server is <http://arras.surge.sh/#private=msk.glitch.me>
 
 # *v1.3* WIP
 
+added `Tri-Spike` (from `Spike` lvl 55)
+
+added `Mega-Mine` (from `Landmine` lvl 55 and `Mega Smasher` lvl 55)
 
 added `Stalker` (from `Assassin` lvl 40)
 
 added `Landmine` (from `Smasher` lvl 40)
 
-~~(would of added `Manager` but it was useless without its fading)~~ lol
+~~(would of added `Manager` but it was useless without its fading)~ lol
 
 # *v1.2*
 
