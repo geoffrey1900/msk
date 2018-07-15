@@ -9,3 +9,5 @@ becuse there not mine (they are CX's) and are not changed so copy them as you li
 its kinda sad what happened here <https://www.youtube.com/watch?v=lQ1ciGYLCww> 
 
 btw DONT USE `Faris90`'S STUFF, HE COPPIES STUFF LIKE THIS AND LETS EVERYONE USE IT, SO HE COPPIES STUFF AND CALLS IT HIS AND LETS EVERYONE USE IT WHEN YOU DONT WANT THEM TO
+
+# *AND FUCK OFF FARIS90*
