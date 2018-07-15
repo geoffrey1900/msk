@@ -1,7 +1,5 @@
 the link to the private server is <http://arras.surge.sh/#private=msk.glitch.me>
 
-*dev link* <http://arras.surge.sh/#private=msk.glitch.me;a>
-
 ...
 
 # *thanks to,*
