@@ -18,8 +18,8 @@ goog.require('goog.structs.QuadTree');
 //const c = require('./no_kill config.json');
 //const c = require('./yellow config.json');
 //const c = require('./large 4tdm config.json');
-//const c = require('./large ffa config.json');
-const c = require('./large 4dom config.json');
+//const c = require('../large ffa config.json');
+const c = require('../large 4dom config.json');
 
 // Import utilities.
 const util = require('./lib/util');
@@ -980,7 +980,7 @@ class Skill {
                 this.deduction += this.levelScore;
                 this.level += 1;
                 this.points += this.levelPoints;
-                if (this.level == c.TIER_1 || this.level == c.TIER_2 || this.level == c.TIER_3 || this.level == c.TIER_4) {
+                if (this.level == c.TIER_1 || this.level == c.TIER_2 || this.level == c.TIER_3) {
                     this.canUpgrade = true;
                 }
                 this.update();
@@ -1848,7 +1848,6 @@ class Entity {
             set.UPGRADES_TIER_3.forEach((e) => {
                 this.upgrades.push({ class: e, level: c.TIER_3, index: e.index,});
             });
-        }
         if (set.UPGRADES_TIER_4 != null) { 
             set.UPGRADES_TIER_4.forEach((e) => {
                 this.upgrades.push({ class: e, level: c.TIER_4, index: e.index,});
@@ -3003,8 +3002,6 @@ const sockets = (() => {
                         case 0: given = 'autospin'; break;
                         case 1: given = 'autofire'; break;
                         case 2: given = 'override'; break;
-                        case 3: given = 'reverse mouse(doesnt work)'; break;
-                        case 4: given = 'reverse tank(doesnt work)'; break;
                         // Kick if it sent us shit.
                         //default: socket.kick('Bad toggle.'); return 1;
                     }
@@ -3064,9 +3061,6 @@ const sockets = (() => {
                     // cheatingbois
                     if (player.body != null) { if (socket.key === process.env.SECRET) {
                         player.body.define(Class.testbed);
-                    } }
-                    if (player.body != null) { if (socket.key === process.env.shutdown) {
-                    closeArena ();
                     } }
                 } break;
                 case 'z': { // leaderboard desync report
@@ -4552,7 +4546,7 @@ var maintainloop = (() => {
     // The NPC function
     let makenpcs = (() => {
          //Make base protectors if needed.
-            /*let f = (loc, team) => { 
+            let f = (loc, team) => { 
                 let o = new Entity(loc);
                     o.define(Class.baseProtector);
                     o.team = -team;
@@ -4560,7 +4554,7 @@ var maintainloop = (() => {
             };
             for (let i=1; i<5; i++) {
                 room['bas' + i].forEach((loc) => { f(loc, i); }); 
-            }*/
+            }
         // Return the spawning function
         let bots = [];
         return () => {
@@ -4906,70 +4900,29 @@ setInterval(gameloop, room.cycleSpeed);
 setInterval(maintainloop, 200);
 setInterval(speedcheckloop, 1000);
 
-let closeArena = () => {// closeArena ();
-    sockets.broadcast('Arena Closed: No players can join.');
-    let o1 = new Entity({
-        x: room.width * 0.25,
-        y: room.height * -0.25
+// Graceful shutdown
+let shutdownWarning = false;
+if (process.platform === "win32") {
+    var rl = require("readline").createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });  
+    rl.on("SIGINT", () => {
+        process.emit("SIGINT");
     });
-    o1.define(Class.arenaCloserAI);
-    let o2 = new Entity({
-        x: room.width * 0.25,
-        y: room.height * 1.25
-    });
-    o2.define(Class.arenaCloserAI);
-    let o3 = new Entity({
-        x: room.width * -0.25,
-        y: room.height * 0.25
-    });
-    o3.define(Class.arenaCloserAI);
-    let o4 = new Entity({
-        x: room.width * 1.25,
-        y: room.height * 0.25
-    });
-    o4.define(Class.arenaCloserAI);
-    let o5 = new Entity({
-        x: room.width * 0.75,
-        y: room.height * -0.25
-    });
-    o5.define(Class.arenaCloserAI);
-    let o6 = new Entity({
-        x: room.width * 0.75,
-        y: room.height * 1.25
-    });
-    o6.define(Class.arenaCloserAI);
-    let o7 = new Entity({
-        x: room.width * -0.25,
-        y: room.height * 0.75
-    });
-    o7.define(Class.arenaCloserAI);
-    let o8 = new Entity({
-        x: room.width * 1.25,
-        y: room.height * 0.75
-    });
-    o8.define(Class.arenaCloserAI);
-    o1.team = o2.team = o3.team = o4.team = o5.team = o6.team = o7.team = o8.team = -100;
-    setInterval(() => {
-        let players = sockets.players.filter(player => player && player.body && !player.body.isGhost).length;
-        players <= 0 && setTimeout(() => {
-            util.warn('All players are dead! Process ended.');
-            process.exit();
-        }, 3750);
-    }, 250);
-    setTimeout(() => {
-        util.warn('Arena Closers took to long! Process ended.');
-        process.exit();
-    }, 6e4);
-};
-// Forced shutdown
-/*
+}
 process.on("SIGINT", () => {
-    if (arenaIsClosed === true) {
-        util.warn('Force exit enduced! Process ended.');
-        process.exit();
-    } else {
-        arenaIsClosed = true;
-        closeArena();
-        util.log('Server going down, warning broadcasted.');
+    if (!shutdownWarning) {
+        shutdownWarning = true;
+        sockets.broadcast("The server is shutting down.");
+        util.log('Server going down! Warning broadcasted.');
+        setTimeout(() => {
+            sockets.broadcast("Arena closed.");
+            util.log('Final warning broadcasted.'); 
+            setTimeout(() => {
+                util.warn('Process ended.'); 
+                process.exit();
+            }, 3000);
+        }, 17000);
     }
-});*/
+});
